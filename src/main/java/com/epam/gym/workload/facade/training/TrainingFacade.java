@@ -1,7 +1,7 @@
-package com.epam.gym.workload.facade;
+package com.epam.gym.workload.facade.training;
 
-import com.epam.gym.workload.contrtoller.rest.dto.TrainingWorkloadRequest;
-import com.epam.gym.workload.service.IWorkloadService;
+import com.epam.gym.workload.controller.rest.dto.TrainingRequest;
+import com.epam.gym.workload.service.training.ITrainingService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -11,13 +11,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class WorkloadFacade implements IWorkloadFacade {
+public class TrainingFacade implements ITrainingFacade {
 
-    private final IWorkloadService workloadService;
+    private final ITrainingService workloadService;
 
     @Override
     @Transactional
-    public void updateWorkload(@NonNull TrainingWorkloadRequest request) {
+    public void updateWorkload(@NonNull TrainingRequest request) {
         log.info("Update workload. Started. Action={}. Trainee username={}, date={}, duration={}",
             request.actionType(), request.trainerUsername(), request.trainingDate(), request.trainingDuration()
         );

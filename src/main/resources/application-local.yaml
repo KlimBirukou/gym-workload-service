@@ -1,0 +1,74 @@
+spring:
+  application:
+    name: gym-workload-server
+  cloud:
+    config:
+      enabled: false
+  output:
+    ansi:
+      enabled: always
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  datasource:
+    url: jdbc:h2:mem:workload;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: false
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.H2Dialect
+
+server:
+  port: 8092
+
+eureka:
+  client:
+    enabled: false
+
+application:
+  security:
+    internal-prefix: "/internal"
+    public-prefix: "/api"
+    endpoints:
+      public-endpoints:
+        - "/api/v1/workload"
+        - "/actuator/**"
+        - "/swagger-ui/**"
+        - "/swagger-ui.html"
+        - "/v3/api-docs/**"
+  request-uid:
+    header-name: "X-Request-Uid"
+    mdc-key: "requestUid"
+  internal:
+    secret: AUTH_SECRET_SUPER_PUPER_SECRET_ULTRA_MAX_FOREVER_SECRET
+    header-name: "X-Internal-Secret"
+    principal: "INTERNAL_SERVICE"
+  auth:
+    url: "http://localhost:8083"
+    path: "/internal/v1/token"
+  swagger:
+    server-url: "http://localhost:8092"
+    server-description: "Local development server"
+
+clients:
+  auth-server:
+    url: http://localhost:8083
+
+logging:
+  level:
+    root: WARN
+    com.epam.gym: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+  pattern:
+    correlation: "[${spring.application.name:},%X{requestUid:-}] "
+    console: "%clr([){faint}%clr(${spring.application.name:}){cyan}%clr( : ){faint}%clr(%X{requestUid:-}){magenta}%clr(]){faint} %clr(%d{yyyy-MM-dd HH:mm:ss}){faint} %clr(%-5level) %clr([%thread]){faint} %clr(%logger{36}){cyan} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{50} - %msg%n"

@@ -1,0 +1,28 @@
+name: gym
+
+services:
+  gym-workload-server:
+    container_name: gym-workload-server
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_APPLICATION_NAME=gym-workload-server
+      - SPRING_CONFIG_IMPORT=configserver:http://gym-config-server:8888
+      - SPRING_CLOUD_CONFIG_FAIL_FAST=true
+      - SPRING_PROFILES_ACTIVE=default
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://gym-discovery-server:8761/eureka/
+    networks:
+      - gym-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 60s
+
+networks:
+  gym-network:
+    external: true

@@ -1,0 +1,17 @@
+package com.epam.gym.workload.client;
+
+import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
+
+@FeignClient(
+    name = "gym-auth-server",
+    url = "${clients.auth-server.url}",
+    path = "/internal/v1",
+    configuration = FeignAuthConfig.class
+)
+public interface IAuthClient {
+
+    @GetMapping("/token")
+    ValidateResponse validate(@RequestHeader("Authorization") String authHeader);
+}

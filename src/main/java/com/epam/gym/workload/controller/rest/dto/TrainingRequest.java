@@ -1,4 +1,4 @@
-package com.epam.gym.workload.contrtoller.rest.dto;
+package com.epam.gym.workload.controller.rest.dto;
 
 import com.epam.gym.workload.domain.ActionType;
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
@@ -10,7 +10,7 @@ import jakarta.validation.constraints.Positive;
 import java.time.LocalDate;
 
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record TrainingWorkloadRequest(
+public record TrainingRequest(
 
     @NotBlank(message = "Trainer username is required")
     String trainerUsername,

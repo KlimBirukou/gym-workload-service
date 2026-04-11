@@ -1,4 +1,4 @@
-package com.epam.gym.workload.contrtoller.advice;
+package com.epam.gym.workload.controller.advice;
 
 import lombok.Builder;
 import lombok.NonNull;

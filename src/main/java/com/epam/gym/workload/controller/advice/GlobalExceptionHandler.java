@@ -1,5 +1,7 @@
-package com.epam.gym.workload.contrtoller.advice;
+package com.epam.gym.workload.controller.advice;
 
+import com.epam.gym.workload.exception.NotAuthenticatedException;
+import com.epam.gym.workload.exception.TrainerNotFoundException;
 import com.epam.gym.workload.exception.TrainingAlreadyExistException;
 import com.epam.gym.workload.exception.TrainingNotFoundException;
 import lombok.NonNull;
@@ -28,12 +30,25 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static final String CONTENT_TYPE_MESSAGE =
         "Content type '%s' is not supported. Supported media types are: %s";
     private static final String TRAINING_NOT_FOUND = "Record of training for trainer %s on day %s not found";
+    private static final String TRAINER_NOT_FOUND = "Trainer [%s] was not found";
     private static final String TRAINING_ALREADY_EXIST = "Record of training for trainer %s on day %s already exist";
     private static final String VALIDATION_FAILED = "VALIDATION_FAILED";
+    private static final String NOT_AUTHENTICATED_MESSAGE =
+        "Authentication required. Please login to access this resource";
+
+   @ExceptionHandler
+    public ResponseEntity<@NonNull Object> handleUnauthorizedException(NotAuthenticatedException exception,
+                                                                       WebRequest request) {
+       return getObjectResponseEntity(
+           exception,
+           request,
+           NOT_AUTHENTICATED_MESSAGE,
+           HttpStatus.UNAUTHORIZED
+       );
+    }
 
     @ExceptionHandler
-    public ResponseEntity<@NonNull Object> handleNotFoundException(TrainingNotFoundException exception,
-                                                                   WebRequest request) {
+    public ResponseEntity<@NonNull Object> handleException(TrainingNotFoundException exception, WebRequest request) {
         return getObjectResponseEntity(
             exception,
             request,
@@ -43,13 +58,22 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     @ExceptionHandler
-    public ResponseEntity<@NonNull Object> handleTrainingAlreadyExistException(TrainingAlreadyExistException exception,
-                                                                               WebRequest request) {
+    public ResponseEntity<@NonNull Object> handleException(TrainingAlreadyExistException exception, WebRequest request) {
         return getObjectResponseEntity(
             exception,
             request,
             TRAINING_ALREADY_EXIST.formatted(exception.getUsername(), exception.getDate()),
             HttpStatus.CONFLICT
+        );
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<@NonNull Object> handleException(TrainerNotFoundException exception, WebRequest request) {
+        return getObjectResponseEntity(
+            exception,
+            request,
+            TRAINER_NOT_FOUND.formatted(exception.getUsername()),
+            HttpStatus.NOT_FOUND
         );
     }
 

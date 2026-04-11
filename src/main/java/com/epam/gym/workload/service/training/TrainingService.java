@@ -1,7 +1,7 @@
-package com.epam.gym.workload.service;
+package com.epam.gym.workload.service.training;
 
 import com.epam.gym.workload.domain.ActionType;
-import com.epam.gym.workload.contrtoller.rest.dto.TrainingWorkloadRequest;
+import com.epam.gym.workload.controller.rest.dto.TrainingRequest;
 import com.epam.gym.workload.domain.Training;
 import com.epam.gym.workload.exception.TrainingAlreadyExistException;
 import com.epam.gym.workload.exception.TrainingNotFoundException;
@@ -20,7 +20,7 @@ import java.util.function.Consumer;
 
 @Service
 @RequiredArgsConstructor
-public class WorkloadService implements IWorkloadService {
+public class TrainingService implements ITrainingService {
 
     private final IWorkloadRepository workloadRepository;
     private final ConversionService conversionService;
@@ -37,9 +37,8 @@ public class WorkloadService implements IWorkloadService {
 
     @Override
     @Transactional
-    public void updateWorkload(@NonNull TrainingWorkloadRequest request) {
+    public void updateWorkload(@NonNull TrainingRequest request) {
         var training = Training.builder()
-            .uid(UUID.randomUUID())
             .duration(request.trainingDuration())
             .username(request.trainerUsername())
             .date(request.trainingDate())
@@ -52,7 +51,9 @@ public class WorkloadService implements IWorkloadService {
         if (workloadRepository.existsByUsernameAndDate(training.getUsername(), training.getDate())) {
             throw new TrainingAlreadyExistException(training.getUsername(), training.getDate());
         }
-        workloadRepository.save(conversionService.convert(training, TrainingEntity.class));
+        var entity = conversionService.convert(training, TrainingEntity.class);
+        entity.setUid(UUID.randomUUID());
+        workloadRepository.save(entity);
     }
 
     private void delete(Training training) {
