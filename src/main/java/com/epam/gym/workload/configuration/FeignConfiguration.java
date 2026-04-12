@@ -1,4 +1,4 @@
-package com.epam.gym.workload.client;
+package com.epam.gym.workload.configuration;
 
 import com.epam.gym.workload.configuration.properties.InternalProperties;
 import com.epam.gym.workload.configuration.properties.RequestUidProperties;
@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Bean;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class FeignAuthConfig {
+public class FeignConfiguration {
 
     private final InternalProperties internalProperties;
     private final RequestUidProperties requestUidProperties;

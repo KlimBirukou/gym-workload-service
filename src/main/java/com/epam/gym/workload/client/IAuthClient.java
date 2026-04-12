@@ -1,5 +1,6 @@
 package com.epam.gym.workload.client;
 
+import com.epam.gym.workload.configuration.FeignConfiguration;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
     name = "gym-auth-server",
     url = "${clients.auth-server.url}",
     path = "/internal/v1",
-    configuration = FeignAuthConfig.class
+    configuration = FeignConfiguration.class
 )
 public interface IAuthClient {
 
