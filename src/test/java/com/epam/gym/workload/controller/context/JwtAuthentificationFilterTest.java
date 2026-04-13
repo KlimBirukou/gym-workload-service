@@ -2,6 +2,7 @@ package com.epam.gym.workload.controller.context;
 
 import com.epam.gym.workload.client.IAuthClient;
 import com.epam.gym.workload.client.ValidateResponse;
+import com.epam.gym.workload.configuration.properties.JwtProperties;
 import com.epam.gym.workload.configuration.properties.SecurityProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -23,6 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
@@ -41,6 +43,8 @@ class JwtAuthentificationFilterTest {
     @Mock
     private SecurityProperties securityProperties;
     @Mock
+    private JwtProperties jwtProperties;
+    @Mock
     private HttpServletRequest request;
     @Mock
     private HttpServletResponse response;
@@ -53,12 +57,14 @@ class JwtAuthentificationFilterTest {
     @BeforeEach
     void setUp() {
         SecurityContextHolder.clearContext();
+        lenient().doReturn(AUTH_HEADER).when(jwtProperties).authHeader();
+        lenient().doReturn(BEARER_PREFIX).when(jwtProperties).bearerPrefix();
     }
 
     @AfterEach
     void tearDown() {
         SecurityContextHolder.clearContext();
-        verifyNoMoreInteractions(authClient, securityProperties, filterChain);
+        verifyNoMoreInteractions(authClient, securityProperties, jwtProperties, filterChain);
     }
 
     @Test
@@ -86,7 +92,6 @@ class JwtAuthentificationFilterTest {
     @Test
     void doFilterInternal_shouldAuthenticate_whenTokenIsValid() throws ServletException, IOException {
         var validateResponse = new ValidateResponse(true, USERNAME);
-
         doReturn(BEARER_TOKEN).when(request).getHeader(AUTH_HEADER);
         doReturn(validateResponse).when(authClient).validate(BEARER_TOKEN);
 
@@ -95,6 +100,8 @@ class JwtAuthentificationFilterTest {
         var authentication = SecurityContextHolder.getContext().getAuthentication();
         assertNotNull(authentication);
         assertEquals(USERNAME, authentication.getPrincipal());
+        verify(jwtProperties).authHeader();
+        verify(jwtProperties).bearerPrefix();
         verify(authClient).validate(BEARER_TOKEN);
         verify(filterChain).doFilter(request, response);
     }
@@ -106,6 +113,7 @@ class JwtAuthentificationFilterTest {
         testObject.doFilterInternal(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(jwtProperties).authHeader();
         verify(filterChain).doFilter(request, response);
     }
 
@@ -116,19 +124,22 @@ class JwtAuthentificationFilterTest {
         testObject.doFilterInternal(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(jwtProperties).authHeader();
+        verify(jwtProperties).bearerPrefix();
         verify(filterChain).doFilter(request, response);
     }
 
     @Test
     void doFilterInternal_shouldNotAuthenticate_whenValidateResponseIsInvalid() throws ServletException, IOException {
         var validateResponse = new ValidateResponse(false, USERNAME);
-
         doReturn(BEARER_TOKEN).when(request).getHeader(AUTH_HEADER);
         doReturn(validateResponse).when(authClient).validate(BEARER_TOKEN);
 
         testObject.doFilterInternal(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(jwtProperties).authHeader();
+        verify(jwtProperties).bearerPrefix();
         verify(authClient).validate(BEARER_TOKEN);
         verify(filterChain).doFilter(request, response);
     }
@@ -141,6 +152,8 @@ class JwtAuthentificationFilterTest {
         testObject.doFilterInternal(request, response, filterChain);
 
         assertNull(SecurityContextHolder.getContext().getAuthentication());
+        verify(jwtProperties).authHeader();
+        verify(jwtProperties).bearerPrefix();
         verify(authClient).validate(BEARER_TOKEN);
         verify(filterChain).doFilter(request, response);
     }

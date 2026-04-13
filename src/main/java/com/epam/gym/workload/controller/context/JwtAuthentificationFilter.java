@@ -2,6 +2,7 @@ package com.epam.gym.workload.controller.context;
 
 import com.epam.gym.workload.client.IAuthClient;
 import com.epam.gym.workload.client.ValidateResponse;
+import com.epam.gym.workload.configuration.properties.JwtProperties;
 import com.epam.gym.workload.configuration.properties.SecurityProperties;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -24,11 +25,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class JwtAuthentificationFilter extends OncePerRequestFilter {
 
-    private static final String AUTHORIZATION_HEADER = "Authorization";
-    private static final String BEARER_PREFIX = "Bearer ";
-
     private final IAuthClient authClient;
     private final SecurityProperties securityProperties;
+    private final JwtProperties jwtProperties;
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request) {
@@ -41,8 +40,8 @@ public class JwtAuthentificationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(@NonNull HttpServletRequest request,
                                     @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        Optional.ofNullable(request.getHeader(AUTHORIZATION_HEADER))
-            .filter(header -> header.startsWith(BEARER_PREFIX))
+        Optional.ofNullable(request.getHeader(jwtProperties.authHeader()))
+            .filter(header -> header.startsWith(jwtProperties.bearerPrefix()))
             .flatMap(this::safeValidate)
             .filter(ValidateResponse::valid)
             .ifPresent(res -> authenticateUser(res.username()));

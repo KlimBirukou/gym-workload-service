@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @FeignClient(
-    name = "gym-auth-server",
-    url = "${clients.auth-server.url}",
+    name = "${application.clients.auth}",
+    url = "${application.auth.url}",
     path = "/internal/v1",
     configuration = FeignConfiguration.class
 )

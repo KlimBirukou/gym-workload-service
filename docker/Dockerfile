@@ -1,8 +1,22 @@
+FROM gradle:9-jdk21-corretto AS builder
+
+WORKDIR /build
+
+COPY gradlew .
+COPY gradle gradle
+COPY build.gradle settings.gradle ./
+
+RUN ./gradlew dependencies --no-daemon
+
+COPY src src
+
+RUN ./gradlew bootJar -x test --no-daemon
+
 FROM amazoncorretto:21-al2023
 
 WORKDIR /app
 
-COPY build/libs/gym-workload-server-*.jar app.jar
+COPY --from=builder /build/build/libs/gym-workload-service-*.jar app.jar
 
 EXPOSE 8082
 

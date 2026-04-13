@@ -1,8 +1,8 @@
 spring:
   application:
-    name: gym-workload-server
+    name: gym-workload-service
   config:
-    import: "configserver:http://gym-config-server:8888"
+    import: "configserver:http://gym-config-service:8888"
   cloud:
     config:
       fail-fast: true
