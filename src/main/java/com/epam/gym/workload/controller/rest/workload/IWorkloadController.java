@@ -2,7 +2,7 @@ package com.epam.gym.workload.controller.rest.workload;
 
 import com.epam.gym.workload.controller.rest.dto.WorkloadResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -26,13 +26,12 @@ public interface IWorkloadController {
             " counted in worked hours."
     )
     @ApiResponse(
-        responseCode = "204",
-        description = "Trainer statistic successfully retrieved",
+        responseCode = "200",
+        description = "Trainer workload successfully retrieved",
         content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
-            array = @ArraySchema(
-                schema = @Schema(implementation = Object.class)
-            ))
+            schema = @Schema(implementation = WorkloadResponse.class)
+        )
     )
     @ApiResponse(
         responseCode = "404",
@@ -50,6 +49,15 @@ public interface IWorkloadController {
             )
         )
     )
-    @GetMapping
-    WorkloadResponse getStatistic(@RequestParam String username);
+    @GetMapping(
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    WorkloadResponse getStatistic(
+        @Parameter(
+            description = "Trainer username",
+            example = "Vesemir.Oldman",
+            required = true
+        )
+        @RequestParam String username
+    );
 }
