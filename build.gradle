@@ -1,36 +1,48 @@
 plugins {
-	id 'java'
-	id 'org.springframework.boot' version '4.0.5'
-	id 'io.spring.dependency-management' version '1.1.7'
+    id 'java'
+    id 'org.springframework.boot' version '4.0.5'
+    id 'io.spring.dependency-management' version '1.1.7'
 }
 
 group = 'com.epam.gym'
 version = '0.0.1-SNAPSHOT'
+description = 'gym-workload-service'
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
-}
-
-repositories {
-	mavenCentral()
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
 }
 
 ext {
-	set('springCloudVersion', "2025.1.1")
+    set('springCloudVersion', "2025.1.1")
+    set('mapstructVersion', "1.6.3")
+    set('mapstructSpringExtensionsVersion', "2.0.0")
+    set('openapiVersion', "3.0.2")
+}
+
+repositories {
+    mavenCentral()
+}
+
+bootRun {
+    systemProperty 'spring.profiles.active', 'local'
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-h2console'
-	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
-	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
-	testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
-	testCompileOnly 'org.projectlombok:lombok'
-	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    // Spring
+    implementation "org.springdoc:springdoc-openapi-starter-webmvc-ui:${openapiVersion}"
+    implementation 'org.springframework.boot:spring-boot-h2console'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 
-    // Eureka Client
+    // Spring Cloud
+    implementation 'org.springframework.cloud:spring-cloud-starter-config'
     implementation 'org.springframework.cloud:spring-cloud-starter-netflix-eureka-client'
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
     // Database
     runtimeOnly 'com.h2database:h2'
@@ -38,15 +50,27 @@ dependencies {
     // Lombok
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
+    testCompileOnly 'org.projectlombok:lombok'
     testAnnotationProcessor 'org.projectlombok:lombok'
+    testAnnotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${mapstructSpringExtensionsVersion}"
+
+    // MapStruct
+    implementation "org.mapstruct:mapstruct:${mapstructVersion}"
+    implementation "org.mapstruct.extensions.spring:mapstruct-spring-annotations:${mapstructSpringExtensionsVersion}"
+    annotationProcessor "org.mapstruct:mapstruct-processor:${mapstructVersion}"
+    annotationProcessor "org.mapstruct.extensions.spring:mapstruct-spring-extensions:${mapstructSpringExtensionsVersion}"
+
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 }
 
 dependencyManagement {
-	imports {
-		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
-	}
+    imports {
+        mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+    }
 }
 
 tasks.named('test') {
-	useJUnitPlatform()
+    useJUnitPlatform()
 }

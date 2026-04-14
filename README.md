@@ -1,0 +1,1 @@
+A microservice dedicated to tracking trainer workload. Receives training session events from CRM Service and maintains aggregated working-hour statistics per trainer. Exposes an API for querying this statistics. Validates incoming requests by communicating with Auth Service.
