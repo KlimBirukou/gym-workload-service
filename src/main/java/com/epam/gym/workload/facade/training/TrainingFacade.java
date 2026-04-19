@@ -1,6 +1,6 @@
 package com.epam.gym.workload.facade.training;
 
-import com.epam.gym.workload.controller.rest.dto.TrainingRequest;
+import com.epam.gym.workload.listener.WorkloadUpdateEvent;
 import com.epam.gym.workload.service.training.ITrainingService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class TrainingFacade implements ITrainingFacade {
 
     @Override
     @Transactional
-    public void updateWorkload(@NonNull TrainingRequest request) {
+    public void updateWorkload(@NonNull WorkloadUpdateEvent request) {
         log.info("Update workload. Started. Action={}. Trainee username={}, date={}, duration={}",
             request.actionType(), request.trainerUsername(), request.trainingDate(), request.trainingDuration()
         );

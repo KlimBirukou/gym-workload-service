@@ -11,6 +11,10 @@ spring:
         initial-interval: 2000
         multiplier: 1.5
         max-interval: 10000
+  kafka:
+    bootstrap-servers: kafka-1:9092,kafka-2:9092,kafka-3:9092
+    consumer:
+      group-id: gym-workload-consumer-group
 
 server:
   port: 8082

@@ -1,6 +1,6 @@
 package com.epam.gym.workload.controller.rest.workload;
 
-import com.epam.gym.workload.controller.rest.dto.WorkloadResponse;
+import com.epam.gym.workload.controller.rest.dto.TrainerWorkloadResponse;
 import com.epam.gym.workload.facade.workload.IWorkloadFacade;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -35,7 +35,7 @@ class WorkloadControllerTest {
 
     @Test
     void getStatistic_shouldReturnWorkloadResponse_whenUsernameIsValid() {
-        var expected = new WorkloadResponse(USERNAME, List.of());
+        var expected = new TrainerWorkloadResponse(USERNAME, List.of());
         doReturn(expected).when(workloadFacade).getWorkload(USERNAME);
 
         var actual = testObject.getStatistic(USERNAME);

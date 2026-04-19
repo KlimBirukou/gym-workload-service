@@ -1,7 +1,7 @@
 package com.epam.gym.workload.service.training;
 
 import com.epam.gym.workload.domain.ActionType;
-import com.epam.gym.workload.controller.rest.dto.TrainingRequest;
+import com.epam.gym.workload.listener.WorkloadUpdateEvent;
 import com.epam.gym.workload.domain.Training;
 import com.epam.gym.workload.exception.TrainingAlreadyExistException;
 import com.epam.gym.workload.exception.TrainingNotFoundException;
@@ -37,7 +37,7 @@ public class TrainingService implements ITrainingService {
 
     @Override
     @Transactional
-    public void updateWorkload(@NonNull TrainingRequest request) {
+    public void updateWorkload(@NonNull WorkloadUpdateEvent request) {
         var training = Training.builder()
             .duration(request.trainingDuration())
             .username(request.trainerUsername())

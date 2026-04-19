@@ -49,4 +49,3 @@ public class InternalSecretFilter extends OncePerRequestFilter {
         filterChain.doFilter(request, response);
     }
 }
-

@@ -1,6 +1,6 @@
 package com.epam.gym.workload.controller.rest.workload;
 
-import com.epam.gym.workload.controller.rest.dto.WorkloadResponse;
+import com.epam.gym.workload.controller.rest.dto.TrainerWorkloadResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,7 +30,7 @@ public interface IWorkloadController {
         description = "Trainer workload successfully retrieved",
         content = @Content(
             mediaType = MediaType.APPLICATION_JSON_VALUE,
-            schema = @Schema(implementation = WorkloadResponse.class)
+            schema = @Schema(implementation = TrainerWorkloadResponse.class)
         )
     )
     @ApiResponse(
@@ -52,7 +52,7 @@ public interface IWorkloadController {
     @GetMapping(
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    WorkloadResponse getStatistic(
+    TrainerWorkloadResponse getStatistic(
         @Parameter(
             description = "Trainer username",
             example = "Vesemir.Oldman",

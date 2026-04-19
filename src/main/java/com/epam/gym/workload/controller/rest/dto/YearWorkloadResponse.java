@@ -5,23 +5,20 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 
-import java.time.Month;
+import java.util.List;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record MonthStat (
+public record YearWorkloadResponse(
 
     @Schema(
-        description = "Calendar month",
-        example = "6"
+        description = "Calendar year",
+        example = "2026"
     )
-    Month month,
+    int year,
 
     @Schema(
-        description = "Total training duration for the month, measured in minutes",
-        example = "120"
+        description = "List of monthly workload statistics for the given year"
     )
-    int totalDuration
-) {
-
-}
+    List<MonthWorkloadResponse> months
+) {}

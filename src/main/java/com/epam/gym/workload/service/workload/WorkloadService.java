@@ -1,8 +1,8 @@
 package com.epam.gym.workload.service.workload;
 
-import com.epam.gym.workload.controller.rest.dto.MonthStat;
-import com.epam.gym.workload.controller.rest.dto.WorkloadResponse;
-import com.epam.gym.workload.controller.rest.dto.YearStat;
+import com.epam.gym.workload.controller.rest.dto.MonthWorkloadResponse;
+import com.epam.gym.workload.controller.rest.dto.TrainerWorkloadResponse;
+import com.epam.gym.workload.controller.rest.dto.YearWorkloadResponse;
 import com.epam.gym.workload.domain.Training;
 import com.epam.gym.workload.exception.TrainerNotFoundException;
 import com.epam.gym.workload.repository.IWorkloadRepository;
@@ -27,10 +27,10 @@ public class WorkloadService implements IWorkloadService{
 
     @Override
     @Transactional(readOnly = true)
-    public WorkloadResponse getWorkload(@NonNull String username) {
+    public TrainerWorkloadResponse getWorkload(@NonNull String username) {
         var trainings = fetchTrainings(username);
         var years = groupByYears(trainings);
-        return WorkloadResponse.builder()
+        return TrainerWorkloadResponse.builder()
             .username(username)
             .years(years)
             .build();
@@ -45,7 +45,7 @@ public class WorkloadService implements IWorkloadService{
             .toList();
     }
 
-    private List<YearStat> groupByYears(List<Training> trainings) {
+    private List<YearWorkloadResponse> groupByYears(List<Training> trainings) {
         return trainings.stream()
             .collect(Collectors.groupingBy(
                 t -> t.getDate().getYear(),
@@ -56,17 +56,17 @@ public class WorkloadService implements IWorkloadService{
             ))
             .entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
-            .map(entry -> YearStat.builder()
+            .map(entry -> YearWorkloadResponse.builder()
                 .year(entry.getKey())
                 .months(groupByMonths(entry.getValue()))
                 .build())
             .toList();
     }
 
-    private List<MonthStat> groupByMonths(Map<Month, Integer> monthMap) {
+    private List<MonthWorkloadResponse> groupByMonths(Map<Month, Integer> monthMap) {
         return monthMap.entrySet().stream()
             .sorted(Map.Entry.comparingByKey())
-            .map(entry -> MonthStat.builder()
+            .map(entry -> MonthWorkloadResponse.builder()
                 .month(entry.getKey())
                 .totalDuration(entry.getValue())
                 .build())
