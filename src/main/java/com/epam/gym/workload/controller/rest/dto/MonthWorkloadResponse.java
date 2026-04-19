@@ -4,24 +4,24 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
-import lombok.NonNull;
 
-import java.util.List;
+import java.time.Month;
 
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record WorkloadResponse(
+public record MonthWorkloadResponse(
 
     @Schema(
-        description = "Trainer username",
-        examples = "Vesemir.Oldman"
+        description = "Calendar month",
+        example = "6"
     )
-    @NonNull String username,
+    Month month,
 
     @Schema(
-        description = "List of yearly workload statistics for the trainer"
+        description = "Total training duration for the month, measured in minutes",
+        example = "120"
     )
-    List<YearStat> years
+    int totalDuration
 ) {
 
 }

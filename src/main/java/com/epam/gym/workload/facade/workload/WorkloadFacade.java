@@ -1,6 +1,6 @@
 package com.epam.gym.workload.facade.workload;
 
-import com.epam.gym.workload.controller.rest.dto.WorkloadResponse;
+import com.epam.gym.workload.controller.rest.dto.TrainerWorkloadResponse;
 import com.epam.gym.workload.service.workload.IWorkloadService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +17,7 @@ public class WorkloadFacade implements IWorkloadFacade {
 
     @Override
     @Transactional(readOnly = true)
-    public WorkloadResponse getWorkload(@NonNull String username) {
+    public TrainerWorkloadResponse getWorkload(@NonNull String username) {
         log.info("Get workload. Started. Username={}", username);
         var result = workloadService.getWorkload(username);
         log.info("Get statistic. Finished. Workload={}", result);

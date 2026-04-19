@@ -1,6 +1,6 @@
 package com.epam.gym.workload.facade.training;
 
-import com.epam.gym.workload.controller.rest.dto.TrainingRequest;
+import com.epam.gym.workload.listener.WorkloadUpdateEvent;
 import com.epam.gym.workload.domain.ActionType;
 import com.epam.gym.workload.service.training.ITrainingService;
 import org.junit.jupiter.api.AfterEach;
@@ -50,11 +50,11 @@ class TrainingFacadeTest {
 
     @ParameterizedTest
     @NullSource
-    void updateWorkload_shouldThrowNullPointerException_whenRequestIsNull(TrainingRequest request) {
+    void updateWorkload_shouldThrowNullPointerException_whenRequestIsNull(WorkloadUpdateEvent request) {
         assertThrows(NullPointerException.class, () -> testObject.updateWorkload(request));
     }
 
-    private static TrainingRequest buildRequest() {
-        return new TrainingRequest(USERNAME, DATE, DURATION, ActionType.ADD);
+    private static WorkloadUpdateEvent buildRequest() {
+        return new WorkloadUpdateEvent(USERNAME, DATE, DURATION, ActionType.ADD);
     }
 }

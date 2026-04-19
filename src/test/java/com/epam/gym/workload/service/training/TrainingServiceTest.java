@@ -1,6 +1,6 @@
 package com.epam.gym.workload.service.training;
 
-import com.epam.gym.workload.controller.rest.dto.TrainingRequest;
+import com.epam.gym.workload.listener.WorkloadUpdateEvent;
 import com.epam.gym.workload.domain.ActionType;
 import com.epam.gym.workload.domain.Training;
 import com.epam.gym.workload.exception.TrainingAlreadyExistException;
@@ -106,11 +106,11 @@ class TrainingServiceTest {
 
     @ParameterizedTest
     @NullSource
-    void updateWorkload_shouldThrowNullPointerException_whenRequestIsNull(TrainingRequest request) {
+    void updateWorkload_shouldThrowNullPointerException_whenRequestIsNull(WorkloadUpdateEvent request) {
         assertThrows(NullPointerException.class, () -> testObject.updateWorkload(request));
     }
 
-    private static TrainingRequest buildRequest(ActionType actionType) {
-        return new TrainingRequest(USERNAME, DATE, DURATION, actionType);
+    private static WorkloadUpdateEvent buildRequest(ActionType actionType) {
+        return new WorkloadUpdateEvent(USERNAME, DATE, DURATION, actionType);
     }
 }
