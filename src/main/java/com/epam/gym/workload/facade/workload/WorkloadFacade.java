@@ -1,12 +1,11 @@
 package com.epam.gym.workload.facade.workload;
 
-import com.epam.gym.workload.controller.rest.dto.TrainerWorkloadResponse;
+import com.epam.gym.workload.domain.workload.TrainerWorkload;
 import com.epam.gym.workload.service.workload.IWorkloadService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -16,8 +15,7 @@ public class WorkloadFacade implements IWorkloadFacade {
     private final IWorkloadService workloadService;
 
     @Override
-    @Transactional(readOnly = true)
-    public TrainerWorkloadResponse getWorkload(@NonNull String username) {
+    public TrainerWorkload getWorkload(@NonNull String username) {
         log.info("Get workload. Started. Username={}", username);
         var result = workloadService.getWorkload(username);
         log.info("Get statistic. Finished. Workload={}", result);

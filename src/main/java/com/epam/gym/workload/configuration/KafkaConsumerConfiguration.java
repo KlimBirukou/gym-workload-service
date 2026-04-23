@@ -1,6 +1,6 @@
 package com.epam.gym.workload.configuration;
 
-import com.epam.gym.workload.listener.WorkloadUpdateEvent;
+import com.epam.gym.workload.domain.update.WorkloadUpdateEvent;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
