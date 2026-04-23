@@ -1,7 +1,8 @@
 package com.epam.gym.workload.listener;
 
 import com.epam.gym.workload.configuration.properties.RequestUidProperties;
-import com.epam.gym.workload.facade.training.ITrainingFacade;
+import com.epam.gym.workload.domain.update.WorkloadUpdateEvent;
+import com.epam.gym.workload.facade.event.IEventFacade;
 import io.micrometer.common.util.StringUtils;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class WorkloadUpdateEventListener implements IWorkloadUpdateEventListener {
 
-    private final ITrainingFacade trainingFacade;
+    private final IEventFacade trainingFacade;
     private final RequestUidProperties requestUidProperties;
 
     @RetryableTopic(
@@ -42,11 +43,11 @@ public class WorkloadUpdateEventListener implements IWorkloadUpdateEventListener
         try (var ignored = MDC.putCloseable(requestUidProperties.mdcKey(), uid)) {
             var training = consumerRecord.value();
             log.info(
-                "Message received. Trainer={}, Date={}, Duration={}, Action={}",
+                "Message received. Trainer={}, Date={}, Duration={}, Event={}",
                 training.trainerUsername(),
                 training.trainingDate(),
                 training.trainingDuration(),
-                training.actionType()
+                training.eventType()
             );
             trainingFacade.updateWorkload(consumerRecord.value());
             log.info("Message processed. Trainer={}", training.trainerUsername());

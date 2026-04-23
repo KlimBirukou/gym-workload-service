@@ -1,18 +1,11 @@
 package com.epam.gym.workload.repository;
 
+import com.epam.gym.workload.repository.entity.TrainerDocument;
 import lombok.NonNull;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.mongodb.repository.MongoRepository;
+import org.springframework.stereotype.Repository;
 
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+@Repository
+public interface IWorkloadRepository extends MongoRepository<@NonNull TrainerDocument, @NonNull String> {
 
-public interface IWorkloadRepository extends JpaRepository<@NonNull TrainingEntity, @NonNull UUID> {
-
-    boolean existsByUsernameAndDate(@NonNull String username, @NonNull LocalDate date);
-
-    Optional<TrainingEntity> findByUsernameAndDate(@NonNull String username, @NonNull LocalDate date);
-
-    List<TrainingEntity> findAllByUsername(@NonNull String username);
 }

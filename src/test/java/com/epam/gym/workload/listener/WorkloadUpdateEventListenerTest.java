@@ -1,8 +1,9 @@
 package com.epam.gym.workload.listener;
 
 import com.epam.gym.workload.configuration.properties.RequestUidProperties;
-import com.epam.gym.workload.domain.ActionType;
-import com.epam.gym.workload.facade.training.ITrainingFacade;
+import com.epam.gym.workload.domain.update.WorkloadUpdateEvent;
+import com.epam.gym.workload.domain.update.WorkloadUpdateEventType;
+import com.epam.gym.workload.facade.event.IEventFacade;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.header.internals.RecordHeaders;
@@ -10,6 +11,8 @@ import org.apache.kafka.common.record.TimestampType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -37,7 +40,7 @@ class WorkloadUpdateEventListenerTest {
     private static final int DURATION = 120;
 
     @Mock
-    private ITrainingFacade trainingFacade;
+    private IEventFacade trainingFacade;
     @Mock
     private RequestUidProperties requestUidProperties;
 
@@ -98,6 +101,12 @@ class WorkloadUpdateEventListenerTest {
         verify(trainingFacade).updateWorkload(training);
     }
 
+    @ParameterizedTest
+    @NullSource
+    void onMessage_shouldThrowException_whenArgumentIsNull(ConsumerRecord<String, WorkloadUpdateEvent> consumerRecord) {
+        assertThrows(NullPointerException.class, () -> testObject.onMessage(consumerRecord));
+    }
+
     @Test
     void onDltMessage_shouldLogError_whenMessageArrivesInDlt() {
         var training = buildTrainingRequest();
@@ -118,7 +127,7 @@ class WorkloadUpdateEventListenerTest {
     }
 
     private static WorkloadUpdateEvent buildTrainingRequest() {
-        return new WorkloadUpdateEvent(TRAINER_USERNAME, DATE, DURATION, ActionType.ADD);
+        return new WorkloadUpdateEvent(TRAINER_USERNAME, DATE, DURATION, WorkloadUpdateEventType.ADD);
     }
 
     private static ConsumerRecord<String, WorkloadUpdateEvent> buildRecord(String topic,
