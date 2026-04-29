@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'idea'
     id 'org.springframework.boot' version '4.0.5'
     id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -19,6 +20,8 @@ ext {
     set('mapstructVersion', "1.6.3")
     set('mapstructSpringExtensionsVersion', "2.0.0")
     set('openapiVersion', "3.0.2")
+    set('cucumberVersion', "7.18.1")
+    set('testcontainersVersion', "1.20.4")
 }
 
 repositories {
@@ -27,6 +30,32 @@ repositories {
 
 bootRun {
     systemProperty 'spring.profiles.active', 'local'
+}
+
+sourceSets {
+    integrationTest {
+        java {
+            srcDirs = ['src/integrationTest/java']
+        }
+        resources {
+            srcDirs = ['src/integrationTest/resources']
+        }
+        compileClasspath += sourceSets.main.output + sourceSets.test.output
+        runtimeClasspath += sourceSets.main.output + sourceSets.test.output
+    }
+}
+
+idea {
+    module {
+        testSources.from(sourceSets.integrationTest.java.srcDirs)
+        testResources.from(sourceSets.integrationTest.resources.srcDirs)
+    }
+}
+
+configurations {
+    integrationTestImplementation.extendsFrom(testImplementation)
+    integrationTestAnnotationProcessor.extendsFrom(annotationProcessor)
+    integrationTestRuntimeOnly.extendsFrom(testRuntimeOnly)
 }
 
 dependencies {
@@ -63,16 +92,58 @@ dependencies {
     implementation 'io.micrometer:micrometer-registry-prometheus'
 
     // Testing
+    testCompileOnly 'org.projectlombok:lombok'
+    testAnnotationProcessor 'org.projectlombok:lombok'
+    integrationTestCompileOnly 'org.projectlombok:lombok'
+    integrationTestAnnotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Cucumber
+    testImplementation "io.cucumber:cucumber-java:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-spring:${cucumberVersion}"
+    testImplementation "io.cucumber:cucumber-junit-platform-engine:${cucumberVersion}"
+
+    // JUnit Platform Suite
+    testImplementation 'org.junit.platform:junit-platform-suite'
+
+    // Testcontainers
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:testcontainers'
+    testImplementation 'org.testcontainers:mongodb'
+    testImplementation 'org.testcontainers:kafka'
+    testImplementation 'org.testcontainers:junit-jupiter'
+
+    // Awaitility
+    testImplementation 'org.awaitility:awaitility'
 }
 
 dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        mavenBom "org.testcontainers:testcontainers-bom:${testcontainersVersion}"
     }
 }
 
 tasks.named('test') {
     useJUnitPlatform()
+}
+
+tasks.register('integrationTest', Test) {
+    useJUnitPlatform()
+    testClassesDirs = sourceSets.integrationTest.output.classesDirs
+    classpath = sourceSets.integrationTest.runtimeClasspath
+    shouldRunAfter tasks.named('test')
+    testLogging {
+        events "started", "passed", "skipped", "failed"
+        showStandardStreams = true
+        exceptionFormat = "full"
+        showExceptions = true
+        showCauses = true
+        showStackTraces = false
+    }
+}
+
+tasks.named('check') {
+    dependsOn tasks.named('integrationTest')
 }
