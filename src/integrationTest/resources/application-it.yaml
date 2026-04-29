@@ -1,0 +1,47 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+  kafka:
+    consumer:
+      group-id: gym-workload-it-consumer-group
+  mongodb:
+    uri: ""
+
+eureka:
+  client:
+    enabled: false
+
+application:
+  security:
+    internal-prefix: "/internal"
+    public-prefix: "/api"
+    endpoints:
+      public-endpoints:
+        - "/api/v1/workload"
+        - "/actuator/**"
+        - "/swagger-ui/**"
+        - "/swagger-ui.html"
+        - "/v3/api-docs/**"
+  auth:
+    url: "http://localhost"
+  swagger:
+    server-url: "http://localhost"
+    server-description: "Integration test server"
+  jwt:
+    auth-header: "Authorization"
+    bearer-prefix: "Bearer"
+  clients:
+    auth: "gym-auth-service"
+  messaging:
+    topics:
+      trainer-workload: trainer.workload.events
+  request-uid:
+    header-name: "X-Request-Uid"
+    mdc-key: "requestUid"
+  internal:
+    secret: "it-internal-secret"
+    header-name: "X-Internal-Secret"
+    principal: "INTERNAL_SERVICE"
